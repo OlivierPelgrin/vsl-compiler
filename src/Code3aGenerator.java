@@ -2,9 +2,9 @@
  * This class implements all the methods for 3a code generation (NOTE: this
  * class must be coded by the student; the methods indicated here can be seen as
  * a suggestion, but are not actually necessary).
- * 
+ *
  * @author MLB
- * 
+ *
  */
 public class Code3aGenerator {
 
@@ -22,7 +22,7 @@ public class Code3aGenerator {
 
 	/**
 	 * Generate code for a binary operation
-	 * 
+	 *
 	 * @param op
 	 *            must be a code op: Inst3a.TAC.XXX
 	 */
@@ -32,6 +32,14 @@ public class Code3aGenerator {
 		cod.append(exp2.code);
 		cod.append(genVar(temp));
 		cod.append(new Inst3a(op, temp, exp1.place, exp2.place));
+		return cod;
+	}
+
+
+	public static Code3a genAssignement(ExpAttribute e, ExpAttribute e2) {
+		Code3a cod = e.code;
+		cod.append(e2.code);
+		cod.append(new Inst3a(Inst3a.TAC.COPY, e.place, e2.place, null));
 		return cod;
 	}
 

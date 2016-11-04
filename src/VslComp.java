@@ -10,15 +10,15 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 
 /**
  * Entry point of the compiler, containing the <code>main</code> function.
- * 
+ *
  * By default, the compiler uses the first argument as the filename of the VSL+
  * file to be compiled.
- * 
+ *
  * An optional '-debug' flag can be given as second argument. In this case, some
  * extra debugging messages will be printed during compilation.
- * 
+ *
  * @author MLB
- * 
+ *
  */
 public class VslComp {
 
@@ -77,20 +77,25 @@ public class VslComp {
 				// one wishes to parse just a fragment of the language (e.g.
 				// begin with an expression). >>>
 				Code3a code = tparser.s(new SymbolTable());
+				System.out.println("CODE 3A");
 				code.print();
 				// We prepare the MIPS code generator, which will compile
 				// the three-address code into MIPS assembly.
-				MIPSCodeGenerator cg = new MIPSCodeGenerator(System.out); // NOT NEEDED AT THE BEGINNING
-					
+
+				//MIPSCodeGenerator cg = new MIPSCodeGenerator(System.out); // NOT NEEDED AT THE BEGINNING
+
 				// NOTE: if necessary, uncomment the call to addStubMain
 				// to add the header and footer for the main function.
 				// This allows the program to be run using the NachOS
 				// emulator.
-				code = cg.addStubMain(code);  // NOT NEEDED AT THE BEGINNING
-					
+
+				//code = cg.addStubMain(code);  // NOT NEEDED AT THE BEGINNING
+
 				// Generates the actual MIPS code, printing it to the
 				// stream chosen previously (by default, System.out).
-				cg.genCode(code);  // NOT NEEDED AT THE BEGINNING
+
+				//cg.genCode(code);  // NOT NEEDED AT THE BEGINNING
+
 				// The rest of the main function are standard error handlers.
 			} catch (Exception e) {
 				System.err.println(e.getMessage());

@@ -10,15 +10,59 @@ s [SymbolTable symTab] returns [Code3a code]
   : e=expression[symTab] { code = e.code; }
   ;
 
+statement [SymbolTable symTab] returns [Code3a code]
+  : ^(ASSIGN_KW e=expression[symTab] IDENT) {
+      ExpAttribute exp = $e.expAtt;
+      //Operand3a op = symTab.lookup($IDENT.text);
+      if(true) {
+        /*if(exp.type instanceof ArrayType) {
+					Errors.incompatibleTypes($IDENT, Type.INT, exp.type, null);
+					System.exit(1);
+				}
+        if(op.type instanceof ArrayType){
+					Errors.incompatibleTypes($IDENT, Type.INT, op.type, null);
+					System.exit(1);
+				}*/
+        code = Code3aGenerator.genAssignement(exp, new ExpAttribute(Type.INT, new Code3a(), new VarSymbol($IDENT.text)));
+      } else {
+        Errors.unknownIdentifier($IDENT, $IDENT.text, null);
+        System.exit(1);
+      }
+    }
+  ;
+
+
+
 expression [SymbolTable symTab] returns [ExpAttribute expAtt]
-  : ^(PLUS e1=expression[symTab] e2=expression[symTab]) 
-    { 
+  : ^(PLUS e1=expression[symTab] e2=expression[symTab])
+    {
       Type ty = TypeCheck.checkBinOp(e1.type, e2.type);
       VarSymbol temp = SymbDistrib.newTemp();
       Code3a cod = Code3aGenerator.genBinOp(Inst3a.TAC.ADD, temp, e1, e2);
       expAtt = new ExpAttribute(ty, cod, temp);
     }
-  | pe=primary_exp[symTab] 
+  | ^(MINUS e1=expression[symTab] e2=expression[symTab])
+    {
+      Type ty = TypeCheck.checkBinOp(e1.type, e2.type);
+      VarSymbol temp = SymbDistrib.newTemp();
+      Code3a cod = Code3aGenerator.genBinOp(Inst3a.TAC.SUB, temp, e1, e2);
+      expAtt = new ExpAttribute(ty, cod, temp);
+    }
+  | ^(MUL e1=expression[symTab] e2=expression[symTab])
+    {
+      Type ty = TypeCheck.checkBinOp(e1.type, e2.type);
+      VarSymbol temp = SymbDistrib.newTemp();
+      Code3a cod = Code3aGenerator.genBinOp(Inst3a.TAC.MUL, temp, e1, e2);
+      expAtt = new ExpAttribute(ty, cod, temp);
+    }
+  | ^(DIV e1=expression[symTab] e2=expression[symTab])
+    {
+      Type ty = TypeCheck.checkBinOp(e1.type, e2.type);
+      VarSymbol temp = SymbDistrib.newTemp();
+      Code3a cod = Code3aGenerator.genBinOp(Inst3a.TAC.DIV, temp, e1, e2);
+      expAtt = new ExpAttribute(ty, cod, temp);
+    }
+  | pe=primary_exp[symTab]
     { expAtt = pe; }
   ;
 
