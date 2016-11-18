@@ -32,7 +32,7 @@ $(SRC_DIR)/VSLParser.java: $(SRC_DIR)/VSLParser.g $(SRC_DIR)/VSLLexer.java VSLLe
 
 %.tokens: $(SRC_DIR)/%.g
 	java -cp $(CLASSPATH) org.antlr.Tool $^
-
+	
 $(SRC_DIR)/VSLLexer.java: $(SRC_DIR)/VSLLexer.g
 	java -cp $(CLASSPATH) org.antlr.Tool $^
 

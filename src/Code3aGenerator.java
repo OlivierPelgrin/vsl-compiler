@@ -35,6 +35,10 @@ public class Code3aGenerator {
 		return cod;
 	}
 
+	/**
+	 * Generate code for assignements
+	 *
+	 **/
 
 	public static Code3a genAssignement(ExpAttribute e, ExpAttribute e2) {
 		Code3a cod = e.code;

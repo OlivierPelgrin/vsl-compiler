@@ -61,7 +61,8 @@ public class VslComp {
 			// <<< NOTE: this line must be changed during development, if one
 			// wishes to parse just a fragment of the language (e.g. begin with
 			// an expression). >>>
-			VSLParser.expression_return r = parser.expression();
+			System.out.println("Starting parser");
+			VSLParser.block_return r = parser.block();
 			// The parser produces an AST.
 			CommonTree t = (CommonTree) r.getTree();
 			// If debugging is on, this prints the resulting tree in LISP
@@ -69,6 +70,14 @@ public class VslComp {
 			Util.log.fine(t.toStringTree());
 			// From the AST, we create a node stream.
 			CommonTreeNodeStream nodes = new CommonTreeNodeStream(t);
+
+			/*
+			Print Nodes
+			String n;
+			while((n = nodes.nextElement().toString()) != "EOF"){
+				System.out.println(n);
+			}*/
+			
 			// This node stream is fed to the tree parser.
 			VSLTreeParser tparser = new VSLTreeParser(nodes);
 			try {
@@ -76,7 +85,7 @@ public class VslComp {
 				// <<< NOTE: this line must be changed during development, if
 				// one wishes to parse just a fragment of the language (e.g.
 				// begin with an expression). >>>
-				Code3a code = tparser.s(new SymbolTable());
+				Code3a code = tparser.block(new SymbolTable());
 				System.out.println("CODE 3A");
 				code.print();
 				// We prepare the MIPS code generator, which will compile

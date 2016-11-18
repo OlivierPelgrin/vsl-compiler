@@ -12,4 +12,3 @@ then
 fi
 
 java -cp $antlr:./src VslComp $1
-
