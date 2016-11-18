@@ -64,17 +64,19 @@ statement [SymbolTable symTab] returns [Code3a code]
   decl_item [SymbolTable symTab] returns [Code3a code]
     : IDENT {
         VarSymbol vs = (VarSymbol) symTab.lookup($IDENT.text);
-        int scopeIdent = vs.getScope();
         int currentScope = symTab.getScope();
-
-        if(vs != null && (scopeIdent == currentScope)) {
-          Errors.redefinedIdentifier($IDENT, $IDENT.text, null);
-          System.exit(1);
+        if(vs == null){
+          vs = new VarSymbol(Type.INT, $IDENT.text, currentScope);
+          symTab.insert($IDENT.text, vs);
+          code = Code3aGenerator.genVar(vs);
+          code.print();
+        } else {
+          int scopeIdent = vs.getScope();
+          if(scopeIdent == currentScope) {
+            Errors.redefinedIdentifier($IDENT, $IDENT.text, null);
+            System.exit(1);
+          }
         }
-
-        vs = new VarSymbol(Type.INT, $IDENT.text, symTab.getScope());
-        symTab.insert($IDENT.text, vs);
-        code = Code3aGenerator.genVar(vs);
     }
     | ^(ARDECL IDENT INTEGER) {
           System.out.println("Déclaration des tableaux non implémenté");

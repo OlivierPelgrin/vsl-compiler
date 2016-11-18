@@ -71,13 +71,13 @@ public class VslComp {
 			// From the AST, we create a node stream.
 			CommonTreeNodeStream nodes = new CommonTreeNodeStream(t);
 
-			/*
-			Print Nodes
+
+			/*Print Nodes
 			String n;
 			while((n = nodes.nextElement().toString()) != "EOF"){
 				System.out.println(n);
 			}*/
-			
+
 			// This node stream is fed to the tree parser.
 			VSLTreeParser tparser = new VSLTreeParser(nodes);
 			try {

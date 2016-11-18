@@ -43,7 +43,7 @@ public class Code3aGenerator {
 	public static Code3a genAssignement(ExpAttribute e, ExpAttribute e2) {
 		Code3a cod = e.code;
 		cod.append(e2.code);
-		cod.append(new Inst3a(Inst3a.TAC.COPY, e.place, e2.place, null));
+		cod.append(new Inst3a(Inst3a.TAC.COPY, e2.place, e.place, null));
 		return cod;
 	}
 
