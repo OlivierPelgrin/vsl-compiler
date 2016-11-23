@@ -31,8 +31,16 @@ statement [SymbolTable symTab] returns [Code3a code]
       }
     | b=block[symTab] {
         $code = $b.code;
-    }
-  ;
+      }
+    | ^(IF_KW cond=expression[symTab] stat=statement[symTab] (else=statement[symTab])?)
+        {
+          if ($else.code != null) {
+    				$code = Code3aGenerator.genIf($cond.expAtt, $stat.code, $else.code);
+    			} else {
+    				$code = Code3aGenerator.genIf($cond.expAtt, $stat.code);
+          }
+        }
+    ;
 
   block [SymbolTable symTab] returns [Code3a code]
     : ^(BLOCK {$symTab.enterScope();} decl=declaration[symTab] il=inst_list[symTab]) {
@@ -69,7 +77,6 @@ statement [SymbolTable symTab] returns [Code3a code]
           vs = new VarSymbol(Type.INT, $IDENT.text, currentScope);
           symTab.insert($IDENT.text, vs);
           code = Code3aGenerator.genVar(vs);
-          code.print();
         } else {
           int scopeIdent = vs.getScope();
           if(scopeIdent == currentScope) {

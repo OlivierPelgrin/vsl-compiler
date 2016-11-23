@@ -47,4 +47,27 @@ public class Code3aGenerator {
 		return cod;
 	}
 
+	/**
+	 * Generate code for if then
+	 *
+	 * @param cond ExpAttribute of condition
+	 * @param thenCode Code3a of the then statement
+	 **/
+
+	public static Code3a genIf(ExpAttribute cond, Code3a thenCode) {
+		// TODO: to implements
+	}
+
+	/**
+	 * Generate code for if then else
+	 *
+	 * @param cond ExpAttribute of condition
+	 * @param thenCode Code3a of the then statement
+	 * @param elseCode Code3a of the else statement
+	 **/
+
+	public static Code3a genIf(ExpAttribute cond, Code3a thenCode, Code3a elseCode) {
+
+	}
+
 } // Code3aGenerator ***
