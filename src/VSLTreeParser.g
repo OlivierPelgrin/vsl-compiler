@@ -10,19 +10,39 @@ s [SymbolTable symTab] returns [Code3a code]
   : e=expression[symTab] { code = e.code; }
   ;
 
+function [SymbolTable symTab] returns [Code3a code]
+// TODO
+;
+
+proto [SymbolTable symTab]
+// TODO
+;
+
+type returns [Type type]
+	: INT_KW {$type = Type.INT;}
+	| VOID_KW {$type = Type.VOID;}
+;
+
+param_list [SymbolTable ts, FunctionType type]
+// TODO
+;
+
+param [SymbolTable ts, FunctionType type]
+// TODO
+;
+
 statement [SymbolTable symTab] returns [Code3a code]
   : ^(ASSIGN_KW e=expression[symTab] IDENT) {
         ExpAttribute exp = $e.expAtt;
         Operand3a op = symTab.lookup($IDENT.text);
         if(op != null) {
-          /*if(exp.type instanceof ArrayType) {
-  					Errors.incompatibleTypes($IDENT, Type.INT, exp.type, null);
+          Type idtype = op.type;
+          Type expType = exp.type;
+          Type t = TypeCheck.checkAssignement(idType, expType);
+          if(t.equals(Type.ERROR)){
+            Errors.incompatibleTypes($IDENT, Type.INT, exp.type, null);
   					System.exit(1);
-  				}
-          if(op.type instanceof ArrayType){
-  					Errors.incompatibleTypes($IDENT, Type.INT, op.type, null);
-  					System.exit(1);
-  				}*/
+          }
           code = Code3aGenerator.genAssignement(exp, new ExpAttribute(Type.INT, new Code3a(), new VarSymbol($IDENT.text)));
         } else {
           Errors.unknownIdentifier($IDENT, $IDENT.text, null);
@@ -63,14 +83,6 @@ statement [SymbolTable symTab] returns [Code3a code]
         }
       )+)
     ;
-
-  /*decl_list [SymbolTable symTab] returns [Code3a code]
-    : {$code = new Code3a();}
-      (de=decl_item[symTab] {
-          $code.append($de.code);
-        }
-      )+
-    ;*/
 
   decl_item [SymbolTable symTab] returns [Code3a code]
     : IDENT {

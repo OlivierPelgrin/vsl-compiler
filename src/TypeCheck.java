@@ -2,7 +2,7 @@
  * Type checking operations (NOTE: this class must be implemented by the
  * student; the methods indicated here can be seen as suggestions; note that
  * some minor checks can still be performed directly in VSLTreeParser.g).
- * 
+ *
  */
 public class TypeCheck {
 
@@ -16,6 +16,16 @@ public class TypeCheck {
 		} else {
 			return Type.ERROR;
 		}
+	}
+
+	public static Type checkAssignement(Type idT, Type expT) {
+		if(idT instanceof ArrayType) {
+			return Type.ERROR;
+		}
+		if(expT instanceof ArrayType) {
+			return Type.ERROR;
+		}
+		return Type.INT;
 	}
 
 }
