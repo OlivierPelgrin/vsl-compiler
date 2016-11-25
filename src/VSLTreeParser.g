@@ -32,14 +32,17 @@ statement [SymbolTable symTab] returns [Code3a code]
     | b=block[symTab] {
         $code = $b.code;
       }
-    | ^(IF_KW cond=expression[symTab] stat=statement[symTab] (else=statement[symTab])?)
+    | ^(IF_KW cond=expression[symTab] stat=statement[symTab] (else_st=statement[symTab])?)
         {
-          if ($else.code != null) {
-    				$code = Code3aGenerator.genIf($cond.expAtt, $stat.code, $else.code);
+          if ($else_st.code != null) {
+    				$code = Code3aGenerator.genIf($cond.expAtt, $stat.code, $else_st.code);
     			} else {
     				$code = Code3aGenerator.genIf($cond.expAtt, $stat.code);
           }
         }
+    | ^(WHILE_KW cond=expression[symTab] stat=statement[symTab]) {
+        $code = Code3aGenerator.genWhile($cond.expAtt, $stat.code);
+      }
     ;
 
   block [SymbolTable symTab] returns [Code3a code]

@@ -55,7 +55,12 @@ public class Code3aGenerator {
 	 **/
 
 	public static Code3a genIf(ExpAttribute cond, Code3a thenCode) {
-		// TODO: to implements
+		LabelSymbol end = SymbDistrib.newLabel();
+		Code3a code = cond.code;
+		code.append(new Inst3a(Inst3a.TAC.IFZ, cond.place, end, null));
+		code.append(thenCode);
+		code.append(new Inst3a(Inst3a.TAC.LABEL, end, null, null));
+		return code;
 	}
 
 	/**
@@ -67,7 +72,29 @@ public class Code3aGenerator {
 	 **/
 
 	public static Code3a genIf(ExpAttribute cond, Code3a thenCode, Code3a elseCode) {
+		LabelSymbol elseLabel = SymbDistrib.newLabel();
+		LabelSymbol end = SymbDistrib.newLabel();
+		Code3a code = cond.code;
+		code.append(new Inst3a(Inst3a.TAC.IFZ, cond.place, elseLabel, null));
+		code.append(thenCode);
+		code.append(new Inst3a(Inst3a.TAC.GOTO, end, null, null));
+		code.append(new Inst3a(Inst3a.TAC.LABEL, elseLabel, null, null));
+		code.append(elseCode);
+		code.append(new Inst3a(Inst3a.TAC.LABEL, end, null, null));
+		return code;
+	}
 
+
+	public static Code3a genWhile(ExpAttribute cond, Code3a dost) {
+		LabelSymbol start = SymbDistrib.newLabel();
+		LabelSymbol end = SymbDistrib.newLabel();
+		Code3a code = new Code3a(new Inst3a(Inst3a.TAC.LABEL, start, null, null));
+		code.append(cond.code);
+		code.append(new Inst3a(Inst3a.TAC.IFZ, cond.place, end, null));
+		code.append(dost);
+		code.append(new Inst3a(Inst3a.TAC.GOTO, start, null, null));
+		code.append(new Inst3a(Inst3a.TAC.LABEL, end, null, null));
+		return code;
 	}
 
 } // Code3aGenerator ***
