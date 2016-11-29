@@ -11,11 +11,32 @@ s [SymbolTable symTab] returns [Code3a code]
   ;
 
 function [SymbolTable symTab] returns [Code3a code]
-// TODO
+ : ^(FUNC_KW type {FunctionType functionType = new FunctionType($type.type, false);}
+ IDENT {symTab.enterScope();} paramList=param_list[symTab, functionType]
+ ^(BODY body=statement[symTab]) {symTab.leaveScope();} ) {
+
+    Operand3a op = symTab.lookup($IDENT.text);
+    LabelSymbol label = new LabelSymbol($IDENT.text);
+    if (op == null) {
+      symTab.insert($IDENT.text, new FunctionSymbol(label, functionType));
+    } else if (op instanceof FunctionSymbol) {
+      TypeCheck.checkFunctionDefinition((FunctionSymbol) op, functionType, $IDENT);
+    }
+    $code = Code3aGenerator.genFunction(label, $body.code);
+  }
 ;
 
 proto [SymbolTable symTab]
-// TODO
+ : ^(PROTO_KW type {FunctionType functionType = new FunctionType($type.type, true);}
+ IDENT {symTab.enterScope();} ^(PARAM paramList=param_list[symTab, functionType] {symTab.leaveScope();}))
+  {
+    if(ts.lookup($IDENT.text) == null) {
+      symTab.insert($IDENT.text, new FunctionSymbol(new LabelSymbol($IDENT.text), functionType));
+    } else {
+      Errors.redefinedIdentifier($IDENT, $IDENT.text, null);
+      System.exit(1);
+    }
+  }
 ;
 
 type returns [Type type]
@@ -23,12 +44,22 @@ type returns [Type type]
 	| VOID_KW {$type = Type.VOID;}
 ;
 
-param_list [SymbolTable ts, FunctionType type]
-// TODO
+param_list [SymbolTable symTab, FunctionType type]
+  : ^(PARAM param[symTab, type]*)
 ;
 
-param [SymbolTable ts, FunctionType type]
-// TODO
+param [SymbolTable symTab, FunctionType type]
+  : IDENT {
+      if (symTab.lookup($IDENT.text) == null) {
+        VarSymbol varSymbol = new VarSymbol(Type.INT, $IDENT.text, symTab.getScope());
+        varSymbol.setParam();
+        symTab.insert($IDENT.text, vs);
+        type.extend(Type.INT);
+      } else {
+        Errors.redefinedIdentifier($IDENT, $IDENT.text, null);
+        System.exit(1);
+      }
+    }
 ;
 
 statement [SymbolTable symTab] returns [Code3a code]
@@ -63,6 +94,29 @@ statement [SymbolTable symTab] returns [Code3a code]
     | ^(WHILE_KW cond=expression[symTab] stat=statement[symTab]) {
         $code = Code3aGenerator.genWhile($cond.expAtt, $stat.code);
       }
+    | ^(RETURN_KW e=expression[symTab])	{
+  			if($e.expAtt.type != Type.INT) {
+  				Errors.incompatibleTypes($RETURN_KW, Type.INT, $e.expAtt.type, null);
+  				System.exit(1);
+  			}
+  			$code = Code3aGenerator.genReturn($esymTab);
+      }
+    | ^(FCALL_S IDENT {FunctionType functionType = new FunctionType(Type.VOID, false);} argument_list[symTab, functionType]) {
+  			Operand3a op = symTab.lookup($IDENT.text);
+  			if(op != null && (op instanceof FunctionSymbol)) {
+  				FunctionSymbol functionSymbol = (FunctionSymbol) op;
+  				if (((FunctionType)functionSymbol.type).getReturnType() == Type.VOID) {
+  					$code = Code3aGenerator.genCall($argument_list.code, new VarSymbol($IDENT.text));
+  				} else {
+  					Errors.unknownIdentifier($IDENT, $IDENT.text, null);
+  					System.exit(1);
+  				}
+          if(!functionSymbol.type.isCompatible((Type)functionType)) {
+  					Errors.incompatibleTypes($IDENT, functionSymbol.type, functionType, null);
+  					System.exit(1);
+  				}
+  			}
+  		}
     ;
 
   block [SymbolTable symTab] returns [Code3a code]

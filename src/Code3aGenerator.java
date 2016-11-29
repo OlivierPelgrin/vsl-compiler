@@ -97,4 +97,16 @@ public class Code3aGenerator {
 		return code;
 	}
 
+	public static Code3a genFunction(LabelSymbol label, Code3a body) {
+		Code3a code = new Code3a(new Inst3a(Inst3a.TAC.LABEL, label, null, null));
+		code.append(new Inst3a(Inst3a.TAC.BEGINFUNC, null, null, null));
+		code.append(body.code);
+		code.append(new Inst3a(Inst3a.TAC.ENDFUNC, null, null, null));
+		return code;
+	}
+
+	public static Code3a genReturn(ExpAttribute exp) {
+		return new Code3a(new Inst3a(Inst3a.TAC.RETURN, exp.place, null, null));
+	}
+
 } // Code3aGenerator ***
