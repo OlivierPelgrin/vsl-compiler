@@ -28,14 +28,18 @@ public class TypeCheck {
 		return Type.INT;
 	}
 
-	public static void checkFunctionDefinition(FunctionSymbol functionSymbol, FunctionType functionType, CommonTree ident) {
+	public static Type checkFunctionDefinition(FunctionSymbol functionSymbol, FunctionType functionType) {
 		if (!((FunctionType)functionSymbol.type).prototype) {
-			Errors.redefinedIdentifier(ident, ident.text, null);
-			System.exit(1);
-		} if (!functionSymbol.type.isCompatible((Type)functionType)) {
-			Errors.incompatibleTypes(ident, functionSymbol.type, functionType, null);
-			System.exit(1);
+			return Type.ERROR;
 		}
+		return functionType.getReturnType();
+	}
+
+	public static Type checkFunctionDefinitionType(FunctionSymbol functionSymbol, FunctionType functionType) {
+		if (!functionSymbol.type.isCompatible((Type)functionType)) {
+			return Type.ERROR;
+		}
+		return functionType.getReturnType();
 	}
 
 }

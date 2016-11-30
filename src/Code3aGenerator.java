@@ -84,6 +84,12 @@ public class Code3aGenerator {
 		return code;
 	}
 
+	/**
+	 * Generate code for while
+	 *
+	 * @param cond ExpAttribute of the condition
+	 * @param dost Code3a of the do statement
+	 **/
 
 	public static Code3a genWhile(ExpAttribute cond, Code3a dost) {
 		LabelSymbol start = SymbDistrib.newLabel();
@@ -97,16 +103,62 @@ public class Code3aGenerator {
 		return code;
 	}
 
+	/**
+	 * Generate code for function definition
+	 *
+	 * @param label LabelSymbol label of the function (the function's name)
+	 * @param body Code3a of the function's body
+	 **/
+
 	public static Code3a genFunction(LabelSymbol label, Code3a body) {
 		Code3a code = new Code3a(new Inst3a(Inst3a.TAC.LABEL, label, null, null));
 		code.append(new Inst3a(Inst3a.TAC.BEGINFUNC, null, null, null));
-		code.append(body.code);
+		code.append(body);
 		code.append(new Inst3a(Inst3a.TAC.ENDFUNC, null, null, null));
 		return code;
 	}
 
+	/**
+	 * Generate code for the RETURN instruction
+	 *
+	 * @param exp ExpAttribute the expression the function will return
+	 **/
+
 	public static Code3a genReturn(ExpAttribute exp) {
 		return new Code3a(new Inst3a(Inst3a.TAC.RETURN, exp.place, null, null));
 	}
+
+	/**
+	 * Generate code for a function's argument
+	 *
+	 * @param exp ExpAttribute the expression argument
+	 **/
+
+	public static Code3a genArguments(ExpAttribute exp) {
+		Code3a code = exp.code;
+		code.append(new Inst3a(Inst3a.TAC.ARG, exp.place, null, null));
+		return code;
+	}
+
+
+	public static Code3a genCallSt(Code3a argCode, String functionName) {
+		Code3a code = argCode;
+		code.append(new Inst3a(Inst3a.TAC.CALL, new LabelSymbol(functionName), null, null));
+		return code;
+	}
+
+	public static Code3a genCallPe(Code3a argCode, String functionName, VarSymbol temp) {
+		Code3a code = Code3aGenerator.genVar(temp);
+		code.append(argCode);
+		code.append(new Inst3a(Inst3a.TAC.CALL, new LabelSymbol(functionName), temp, null));
+		return code;
+	}
+
+
+
+
+
+
+
 
 } // Code3aGenerator ***
