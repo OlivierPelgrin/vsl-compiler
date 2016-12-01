@@ -118,10 +118,6 @@ statement [SymbolTable symTab] returns [Code3a code]
   					Errors.unknownIdentifier($IDENT, $IDENT.text, null);
   					System.exit(1);
   				}
-          if(!functionSymbol.type.isCompatible((Type)functionType)) {
-  					Errors.incompatibleTypes($IDENT, functionSymbol.type, functionType, null);
-  					System.exit(1);
-  				}
   			}
   		}
     ;
