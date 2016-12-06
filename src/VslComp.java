@@ -62,7 +62,7 @@ public class VslComp {
 			// wishes to parse just a fragment of the language (e.g. begin with
 			// an expression). >>>
 			System.out.println("Starting parser");
-			VSLParser.block_return r = parser.block();
+			VSLParser.s_return r = parser.s();
 			// The parser produces an AST.
 			CommonTree t = (CommonTree) r.getTree();
 			// If debugging is on, this prints the resulting tree in LISP
@@ -85,8 +85,8 @@ public class VslComp {
 				// <<< NOTE: this line must be changed during development, if
 				// one wishes to parse just a fragment of the language (e.g.
 				// begin with an expression). >>>
-				Code3a code = tparser.block(new SymbolTable());
-				System.out.println("CODE 3A");
+				Code3a code = tparser.s(new SymbolTable());
+				System.out.println("\nCODE 3A :");
 				code.print();
 				// We prepare the MIPS code generator, which will compile
 				// the three-address code into MIPS assembly.

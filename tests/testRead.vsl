@@ -1,0 +1,4 @@
+FUNC VOID main() {
+	INT a, b
+	READ a,b
+}

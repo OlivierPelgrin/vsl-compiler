@@ -125,7 +125,9 @@ public class Code3aGenerator {
 	 **/
 
 	public static Code3a genReturn(ExpAttribute exp) {
-		return new Code3a(new Inst3a(Inst3a.TAC.RETURN, exp.place, null, null));
+		Code3a code = exp.code;
+		code.append(new Code3a(new Inst3a(Inst3a.TAC.RETURN, exp.place, null, null)));
+		return code;
 	}
 
 	/**
@@ -140,25 +142,45 @@ public class Code3aGenerator {
 		return code;
 	}
 
-
+	//Functions call
 	public static Code3a genCallSt(Code3a argCode, String functionName) {
 		Code3a code = argCode;
-		code.append(new Inst3a(Inst3a.TAC.CALL, new LabelSymbol(functionName), null, null));
+		code.append(new Inst3a(Inst3a.TAC.CALL, null, new LabelSymbol(functionName), null));
 		return code;
 	}
 
 	public static Code3a genCallPe(Code3a argCode, String functionName, VarSymbol temp) {
 		Code3a code = Code3aGenerator.genVar(temp);
 		code.append(argCode);
-		code.append(new Inst3a(Inst3a.TAC.CALL, new LabelSymbol(functionName), temp, null));
+		code.append(new Inst3a(Inst3a.TAC.CALL, temp, new LabelSymbol(functionName), null));
+		return code;
+	}
+
+	/*
+	*
+	**/
+	public static Code3a genPrintItem(ExpAttribute exp) {
+		Code3a code = genArguments(exp);
+		if(exp.type.equals(Type.INT)) {
+			code.append(new Inst3a(Inst3a.TAC.CALL, null, SymbDistrib.builtinPrintN, null));
+		}
+		return code;
+	}
+
+	public static Code3a genPrintItem(Data3a text) {
+		Code3a code = new Code3a();
+		code.appendData(text);
+		code.append(new Inst3a(Inst3a.TAC.ARG, text.getLabel(), null, null));
+		code.append(new Inst3a(Inst3a.TAC.CALL, null, SymbDistrib.builtinPrintS, null));
 		return code;
 	}
 
 
-
-
-
-
+	public static Code3a genReadItem(VarSymbol id) {
+		Code3a code = new Code3a(new Inst3a(Inst3a.TAC.CALL, id, SymbDistrib.builtinRead, null));
+		return code;
+	}
+		
 
 
 } // Code3aGenerator ***

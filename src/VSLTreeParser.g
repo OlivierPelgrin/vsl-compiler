@@ -7,8 +7,17 @@ options {
 }
 
 s [SymbolTable symTab] returns [Code3a code]
-  : e=expression[symTab] { code = e.code; }
-  ;
+  : p=program[symTab] { code = $p.code; }
+;
+
+program [SymbolTable symTab] returns [Code3a code]
+	:	^(PROG {$code = new Code3a();} (u=unit[symTab] {$code.append($u.code);})+)
+;
+
+unit [SymbolTable symTab] returns [Code3a code]
+	:	f=function[symTab] { $code = $f.code; }
+	|	proto[symTab] { $code = new Code3a(); }
+;
 
 function [SymbolTable symTab] returns [Code3a code]
  : ^(FUNC_KW type {FunctionType functionType = new FunctionType($type.type, false);}
@@ -35,7 +44,7 @@ function [SymbolTable symTab] returns [Code3a code]
 
 proto [SymbolTable symTab]
  : ^(PROTO_KW type {FunctionType functionType = new FunctionType($type.type, true);}
- IDENT {symTab.enterScope();} ^(PARAM paramList=param_list[symTab, functionType] {symTab.leaveScope();}))
+ IDENT {symTab.enterScope();} paramList=param_list[symTab, functionType] {symTab.leaveScope();})
   {
     if(symTab.lookup($IDENT.text) == null) {
       symTab.insert($IDENT.text, new FunctionSymbol(new LabelSymbol($IDENT.text), functionType));
@@ -120,7 +129,40 @@ statement [SymbolTable symTab] returns [Code3a code]
   				}
   			}
   		}
-    ;
+		|	^(PRINT_KW print_list[symTab]) { $code = $print_list.code; }
+
+		| ^(READ_KW read_list[symTab]) { $code = $read_list.code; }
+;
+
+print_list[SymbolTable symTab] returns [Code3a code]
+	: {$code = new Code3a();} (pi=print_item[symTab] {$code.append($pi.code);})*
+;
+
+print_item[SymbolTable symTab] returns [Code3a code]
+	:	TEXT {$code = Code3aGenerator.genPrintItem(new Data3a($TEXT.text));}
+  | e=expression[symTab] {$code = Code3aGenerator.genPrintItem($e.expAtt); }
+;
+
+read_list[SymbolTable symTab] returns [Code3a code]
+	: {$code = new Code3a();} (ri=read_item[symTab] {$code.append($ri.code);})*
+;
+
+read_item[SymbolTable symTab] returns [Code3a code]
+  : IDENT 
+		{
+			VarSymbol varSymb = (VarSymbol) symTab.lookup($IDENT.text);
+			if(varSymb != null) {
+				$code = Code3aGenerator.genReadItem(varSymb);
+			} else {
+				Errors.unknownIdentifier($IDENT, $IDENT.text, null);
+				System.exit(1);
+			}
+		}
+;
+
+
+
+
 
   block [SymbolTable symTab] returns [Code3a code]
     : ^(BLOCK {$symTab.enterScope();} decl=declaration[symTab] il=inst_list[symTab]) {
