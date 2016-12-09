@@ -40,10 +40,9 @@ public class Code3aGenerator {
 	 *
 	 **/
 
-	public static Code3a genAssignement(ExpAttribute e, ExpAttribute e2) {
+	public static Code3a genAssignement(ExpAttribute e, Operand3a op) {
 		Code3a cod = e.code;
-		cod.append(e2.code);
-		cod.append(new Inst3a(Inst3a.TAC.COPY, e2.place, e.place, null));
+		cod.append(new Inst3a(Inst3a.TAC.COPY, op, e.place, null));
 		return cod;
 	}
 
@@ -180,7 +179,7 @@ public class Code3aGenerator {
 		Code3a code = new Code3a(new Inst3a(Inst3a.TAC.CALL, id, SymbDistrib.builtinRead, null));
 		return code;
 	}
-		
+
 
 
 } // Code3aGenerator ***

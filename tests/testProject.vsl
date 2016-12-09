@@ -1,0 +1,29 @@
+PROTO INT compute(a,b)
+FUNC VOID main()
+{
+	INT a, b, c
+	READ a, b
+	c := compute(a, b)
+}
+FUNC INT compute(a,b) {
+  INT i
+  i := 0
+  WHILE i - 100
+  DO
+  {
+    IF a - b
+    THEN
+    {
+      a := b
+    }
+    ELSE
+    {
+      b := a
+    }
+    FI
+    i := i + 1
+    PRINT i
+  }
+  DONE
+  RETURN a
+}

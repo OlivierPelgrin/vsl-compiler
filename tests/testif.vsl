@@ -1,14 +1,16 @@
-{
+FUNC INT main(){
 INT a
 a := 1
 IF a -1
 THEN
 {
   a := 2
+  PRINT a
 }
 ELSE
 {
   a := 1
+  PRINT a
 }
 FI
 }

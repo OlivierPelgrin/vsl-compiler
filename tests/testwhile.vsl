@@ -1,10 +1,11 @@
-{
+FUNC INT main(){
 INT a
 a := 0
 WHILE 10 - a
 DO
 {
   a := a + 1
+  PRINT a
 }
 DONE
 }

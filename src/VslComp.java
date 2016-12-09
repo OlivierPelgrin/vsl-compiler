@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.logging.*;
 
 import org.antlr.runtime.ANTLRFileStream;
@@ -86,12 +87,19 @@ public class VslComp {
 				// one wishes to parse just a fragment of the language (e.g.
 				// begin with an expression). >>>
 				Code3a code = tparser.s(new SymbolTable());
+
 				System.out.println("\nCODE 3A :");
 				code.print();
+
 				// We prepare the MIPS code generator, which will compile
 				// the three-address code into MIPS assembly.
 
-				//MIPSCodeGenerator cg = new MIPSCodeGenerator(System.out); // NOT NEEDED AT THE BEGINNING
+				// We create a PrintStream for the output file. The name of the output is the name of the source file but with an ".s" extension
+				// To work, the extension of the source MUST BE ".vsl"
+				//PrintStream ps = new PrintStream(args[0].replace(".vsl",".s"));
+				PrintStream ps = new PrintStream("./nachos/test/test.s");
+
+				MIPSCodeGenerator cg = new MIPSCodeGenerator(ps); // NOT NEEDED AT THE BEGINNING
 
 				// NOTE: if necessary, uncomment the call to addStubMain
 				// to add the header and footer for the main function.
@@ -103,7 +111,7 @@ public class VslComp {
 				// Generates the actual MIPS code, printing it to the
 				// stream chosen previously (by default, System.out).
 
-				//cg.genCode(code);  // NOT NEEDED AT THE BEGINNING
+				cg.genCode(code);  // NOT NEEDED AT THE BEGINNING
 
 				// The rest of the main function are standard error handlers.
 			} catch (Exception e) {

@@ -90,7 +90,7 @@ statement [SymbolTable symTab] returns [Code3a code]
             Errors.incompatibleTypes($IDENT, Type.INT, exp.type, null);
   					System.exit(1);
           }
-          code = Code3aGenerator.genAssignement(exp, new ExpAttribute(Type.INT, new Code3a(), new VarSymbol($IDENT.text)));
+          code = Code3aGenerator.genAssignement(exp, op);
         } else {
           Errors.unknownIdentifier($IDENT, $IDENT.text, null);
           System.exit(1);
@@ -148,7 +148,7 @@ read_list[SymbolTable symTab] returns [Code3a code]
 ;
 
 read_item[SymbolTable symTab] returns [Code3a code]
-  : IDENT 
+  : IDENT
 		{
 			VarSymbol varSymb = (VarSymbol) symTab.lookup($IDENT.text);
 			if(varSymb != null) {
@@ -278,9 +278,9 @@ primary_exp [SymbolTable symTab] returns [ExpAttribute expAtt]
   ;
 
 argument_list [SymbolTable symTab, FunctionType functionType] returns [Code3a code]
-	: (e=expression[symTab]
+	: {$code = new Code3a();} (e=expression[symTab]
 		{
-			$code = Code3aGenerator.genArguments($e.expAtt);
+			$code.append(Code3aGenerator.genArguments($e.expAtt));
       if(functionType != null) {
 				if($e.expAtt.place.type == Type.I_CONST) { // isCompatible will fail if we don't do this
 					functionType.extend(Type.INT);

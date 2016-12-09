@@ -1,6 +1,6 @@
-{
+FUNC INT main(){
 INT a, b
 a := 1
 b := 1
-a := a + b
+PRINT a
 }

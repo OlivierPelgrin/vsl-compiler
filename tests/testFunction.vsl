@@ -1,9 +1,9 @@
-PROTO INT test(k)
+PROTO INT test(k,l)
 FUNC VOID main()
 {
 	INT a, b
 	a := 0
-	b := test(a)
+	b := test(a,a)
 }
-FUNC INT test(k)
-	RETURN k + 1
+FUNC INT test(k,l)
+	RETURN k + l
